@@ -9,7 +9,7 @@ def inference(w, b, X):
     return Y_pred
 
 def eval_loss(w, b, X, gt_Y):
-    return np.linalg.norm(np.dot(X, w) + b - gt_Y) * 0.5
+    return np.mean((np.dot(X, w) + b - gt_Y) ** 2) * 0.5
 
 def gradient(pred_Y, gt_Y, X):
     diff = pred_Y - gt_Y
@@ -40,16 +40,15 @@ def gen_sample_data():
     num_samples = 100
     w = random.randint(0, 10) + random.random()		# for noise random.random[0, 1)
     b = random.randint(0, 5) + random.random()
-    X = np.random.randn(num_samples) * 100
-    Y = np.dot(X, w) + b + np.random.randn(num_samples) * random.randint(-1, 1)
+    X = np.random.randint(0, 100, num_samples) * np.random.rand(num_samples)
+    Y = np.dot(X, w) + b + np.random.rand(num_samples) * np.random.randint(-1, 2, num_samples)
     return X, Y, w, b
     
 def run():
     X, Y, w, b = gen_sample_data()
-    lr = 0.0001
-    max_iter = 10
+    lr = 0.001
+    max_iter = 10000
     train(X, Y, 50, lr, max_iter)
-    
     
 if __name__ == '__main__':
     run()

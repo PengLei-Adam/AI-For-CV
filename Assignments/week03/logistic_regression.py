@@ -1,4 +1,4 @@
-## Linear Regression in pythonic way
+## Logistic Regression in pythonic way
 ###############################
 import numpy as np
 import random
@@ -16,19 +16,19 @@ def inference(w, b, X):
     return Y_pred
 
 def eval_loss(w, b, X, gt_Y):
-    return np.linalg.norm(inference(w, b, X) - gt_Y) * 0.5
+    pred_Y = inference(w, b, X)
+    J = -np.mean(gt_Y * np.log(pred_Y) + (1-gt_Y) * np.log(1-pred_Y))
+    return  J
 
-def gradient(gt_Y, X, w, b):
-    z = np.dot(X, w) + b
-    pred_Y = sigmoid(z)
+def gradient(pred_Y, gt_Y, X):
     diff = pred_Y - gt_Y
-    sp = sigmoid_prime(z)
-    dw = np.mean((diff * sp * X.T).T, axis=0)
-    db = np.mean(diff * sp)
+    dw = np.mean((diff * X.T).T, axis=0)
+    db = np.mean(diff)
     return dw, db
 
 def cal_step_gradient(batch_X, batch_gt_Y, w, b, lr):
-    dw, db = gradient(batch_gt_Y, batch_X, w, b)
+    batch_pred_Y = inference(w, b, batch_X)
+    dw, db = gradient(batch_pred_Y, batch_gt_Y, batch_X)
     w -= lr * dw
     b -= lr * db
     return w, b
@@ -47,10 +47,10 @@ def train(X, gt_Y, batch_size, lr, max_iter):
 
 def gen_sample_data():
     num_samples = 100
-    w = random.random()		# for noise random.random[0, 1)
+    w = random.randint(0, 5) + random.random()		# for noise random.random[0, 1)
     b = random.random()
-    X = np.random.randn(num_samples)
-    Y = sigmoid(np.dot(X, w) + b)+ np.random.randn(num_samples) * 0.1
+    X = np.random.rand(num_samples) * np.random.choice([-1, 1], num_samples)
+    Y = (2*sigmoid(np.dot(X, w) + b))//1
     return X, Y, w, b
     
 def run():
@@ -58,8 +58,7 @@ def run():
     lr = 0.1
     max_iter = 10000
     train(X, Y, 50, lr, max_iter)
-    print(w, b)
-    
     
 if __name__ == '__main__':
     run()
+    
