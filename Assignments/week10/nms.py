@@ -29,9 +29,9 @@ def IOU(reg1, reg2):
     if x2-x1 < 0 or y2-y1 < 0:
         return 0
 
-    s_in = (x2-x1) * (y2-y1)
-    s1 = (reg1[1] - reg1[0]) * (reg1[3] - reg1[2])
-    s2 = (reg2[1] - reg2[0]) * (reg2[3] - reg2[2])
+    s_in = (x2 - x1 + 1) * (y2 - y1 + 1)
+    s1 = (reg1[1] - reg1[0] + 1) * (reg1[3] - reg1[2] + 1)
+    s2 = (reg2[1] - reg2[0] + 1) * (reg2[3] - reg2[2] + 1)
 
     return s_in / (s1 + s2 - s_in)
 
